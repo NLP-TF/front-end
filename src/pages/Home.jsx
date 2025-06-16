@@ -74,13 +74,24 @@ const LeftPanel = styled.div`
 `;
 
 const Title = styled.h1`
-  color: #6c6eed;
-  font-size: 32px;
-  font-weight: bold;
-  margin: 0 0 8px 0;
+  ${({ theme }) => `
+    font-size: ${theme.textStyles.title32B.fontSize};
+    font-weight: ${theme.textStyles.title32B.fontWeight};
+    line-height: ${theme.textStyles.title32B.lineHeight};
+    letter-spacing: ${theme.textStyles.title32B.letterSpacing};
+    color: #111827;
+    margin: 0 0 8px 0;
+  `}
 
   @media (min-width: ${tablet}) {
-    font-size: 40px;
+    font-size: ${({ theme }) => theme.textStyles.title48EB.fontSize};
+    font-weight: ${({ theme }) => theme.textStyles.title48EB.fontWeight};
+    line-height: ${({ theme }) => theme.textStyles.title48EB.lineHeight};
+    letter-spacing: ${({ theme }) => theme.textStyles.title48EB.letterSpacing};
+  }
+  
+  span {
+    color: #6C6EED; /* Main/F 100 */
   }
 `;
 
@@ -457,7 +468,7 @@ const Home = () => {
       <PageWrapper>
         <ContentBox>
           <LeftPanel>
-            <Title>너 T야?</Title>
+            <Title>너 <span>T</span>야?</Title>
             <Description>
               {"MBTI의 T/F 유형별 위로 스타일을\n판단하는 시뮬레이션 게임"}
             </Description>

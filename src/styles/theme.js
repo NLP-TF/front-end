@@ -1,4 +1,9 @@
 export const theme = {
+  // Breakpoints for responsive design
+  breakpoints: {
+    tablet: '1024px',
+    mobile: '768px',
+  },
   // Text styles with weights and spacing
   textStyles: {
     title48EB: {

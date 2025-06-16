@@ -20,6 +20,10 @@ export const GlobalStyles = createGlobalStyle`
     height: 100%;
   }
   
+  :root {
+    --breakpoint-tablet: 1024px;
+  }
+  
   body {
     font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
