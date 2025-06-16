@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { theme } from "../styles/theme";
+import styled from "styled-components";
+import { startGame } from "../api/start";
+import { ClipLoader } from "react-spinners";
 
 // Layout Components
 const PageContainer = styled.div`
@@ -310,23 +311,35 @@ const StartButton = styled.button`
 const Select = () => {
   const [selectedType, setSelectedType] = useState(null);
   const [nickname, setNickname] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleTypeSelect = (type) => {
     setSelectedType(type);
   };
 
-  const navigate = useNavigate();
+  const handleStartGame = async () => {
+    if (!nickname.trim() || !selectedType) {
+      alert("닉네임과 MBTI 유형을 모두 선택해주세요.");
+      return;
+    }
 
-  const handleStartGame = () => {
-    if (nickname.trim() && selectedType) {
-      // Save user data to localStorage or context if needed
-      localStorage.setItem('userNickname', nickname);
-      localStorage.setItem('userType', selectedType);
-      
-      // Navigate to game page
-      navigate('/game');
-    } else {
-      alert('닉네임과 MBTI 유형을 모두 선택해주세요.');
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await startGame(nickname, selectedType);
+      // Save session ID and user type to localStorage
+      localStorage.setItem("sessionId", response.session_id);
+      localStorage.setItem("userType", selectedType);
+      localStorage.setItem("userNickname", nickname);
+      navigate("/game");
+    } catch (err) {
+      console.error("Failed to start game:", err);
+      setError("게임 시작에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -413,14 +426,26 @@ const Select = () => {
             </CardContainer>
           </FormSection>
         </MainContent>
-
         <StartButton
           onClick={handleStartGame}
           $isActive={!!(nickname.trim() && selectedType)}
           $selectedType={selectedType}
-          disabled={!nickname.trim() || !selectedType}
+          disabled={isLoading || !(nickname.trim() && selectedType)}
         >
-          게임 시작하기
+          {isLoading ? (
+            <ClipLoader
+              color="#fff"
+              size={20}
+              cssOverride={{
+                display: "block",
+                margin: "0 auto",
+              }}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          ) : (
+            "시작하기"
+          )}
         </StartButton>
       </ContentContainer>
     </PageContainer>
