@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
 
 const Container = styled.div`
@@ -444,32 +445,32 @@ const ROUND_DATA = [
     id: 1,
     situation: "친구가 시험에서 떨어졌을 때",
     description: "열심히 공부했는데도 시험에 떨어진 친구를 위로해주세요.",
-    userMessage: "시험 결과가 안 좋았네..."
+    userMessage: "시험 결과가 안 좋았네...",
   },
   {
     id: 2,
     situation: "연인과 다툰 친구",
     description: "연인과 심하게 다퉜는데, 어떻게 위로해줄까요?",
-    userMessage: "너무 속상해..."
+    userMessage: "너무 속상해...",
   },
   {
     id: 3,
     situation: "직장에서 상사에게 혼난 친구",
     description: "부당하게 혼난 친구를 위로해주세요.",
-    userMessage: "상사가 너무 불공평해..."
+    userMessage: "상사가 너무 불공평해...",
   },
   {
     id: 4,
     situation: "가족과의 갈등",
     description: "가족과의 오해로 속상해하는 친구를 위로해주세요.",
-    userMessage: "가족들이 날 이해를 안 해줘..."
+    userMessage: "가족들이 날 이해를 안 해줘...",
   },
   {
     id: 5,
     situation: "취업에 실패한 친구",
     description: "열심히 준비했던 회사에 떨어진 친구를 위로해주세요.",
-    userMessage: "너무 힘들어..."
-  }
+    userMessage: "너무 힘들어...",
+  },
 ];
 
 const Game = () => {
@@ -477,12 +478,13 @@ const Game = () => {
   const [currentRound, setCurrentRound] = useState(1);
   const [userResponse, setUserResponse] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [gameState, setGameState] = useState('waiting'); // 'waiting', 'submitted', 'showingAnalysis'
-  const [currentResponse, setCurrentResponse] = useState('');
+  const [gameState, setGameState] = useState("waiting"); // 'waiting', 'submitted', 'showingAnalysis'
+  const [currentResponse, setCurrentResponse] = useState("");
   const [isGameCompleted, setIsGameCompleted] = useState(false);
-  
+
   // Get current round data
-  const currentRoundData = ROUND_DATA.find(round => round.id === currentRound) || ROUND_DATA[0];
+  const currentRoundData =
+    ROUND_DATA.find((round) => round.id === currentRound) || ROUND_DATA[0];
 
   const theme = useTheme();
 
@@ -506,11 +508,11 @@ const Game = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userResponse.trim() || isSubmitting) return;
-    
+
     setIsSubmitting(true);
     setCurrentResponse(userResponse);
-    setGameState('submitted');
-    
+    setGameState("submitted");
+
     try {
       // Simulate API call
       const result = await GameAPI.submitResponse(
@@ -522,28 +524,29 @@ const Game = () => {
 
       // Show analysis after 1 second
       setTimeout(() => {
-        setGameState('showingAnalysis');
+        setGameState("showingAnalysis");
         setIsSubmitting(false);
       }, 1000);
-      
     } catch (error) {
       console.error("Error submitting response:", error);
       setIsSubmitting(false);
     }
   };
 
+  const navigate = useNavigate();
+
   // Handle next round
   const handleNextRound = () => {
     if (currentRound < 5) {
-      setCurrentRound(prev => prev + 1);
-      setGameState('waiting');
-      setCurrentResponse('');
-      setUserResponse('');
+      setCurrentRound((prev) => prev + 1);
+      setGameState("waiting");
+      setCurrentResponse("");
+      setUserResponse("");
     } else {
       // Handle game completion
       setIsGameCompleted(true);
-      console.log('Game completed!');
-      // You can add game completion logic here
+      console.log("Game completed!");
+      navigate("/result");
     }
   };
 
@@ -618,7 +621,7 @@ const Game = () => {
           </HeaderTop>
         </HeaderContent>
       </Header>
-      
+
       <GameBox>
         <SituationCard>
           <CardContent>
@@ -639,33 +642,43 @@ const Game = () => {
         </SituationCard>
 
         <MessageContainer>
-          <MachineMessage>
-            {currentRoundData.userMessage}
-          </MachineMessage>
-          
-          {gameState !== 'waiting' && (
+          <MachineMessage>{currentRoundData.userMessage}</MachineMessage>
+
+          {gameState !== "waiting" && (
             <UserMessage>{currentResponse}</UserMessage>
           )}
         </MessageContainer>
 
-        {gameState === 'showingAnalysis' && (
+        {gameState === "showingAnalysis" && (
           <>
             <AnalysisBox>
-              <div style={{
-                fontSize: 18,
-                color: "var(--Grayscale-gray-80, #4B5563)",
-                fontWeight: 600,
-                whiteSpace: 'pre-line',
-                textAlign: 'center'
-              }}>
-                {isLearningF 
-                  ? `당신의 F 점수는 ${Math.floor(Math.random() * 40) + 60}점이에요!\n조금 더 F에 다가가볼까요?`
-                  : `당신의 T 점수는 ${Math.floor(Math.random() * 40) + 60}점이에요!\n조금 더 T에 다가가볼까요?`
-                }
+              <div
+                style={{
+                  fontSize: 18,
+                  color: "var(--Grayscale-gray-80, #4B5563)",
+                  fontWeight: 600,
+                  whiteSpace: "pre-line",
+                  textAlign: "center",
+                }}
+              >
+                {isLearningF
+                  ? `당신의 F 점수는 ${
+                      Math.floor(Math.random() * 40) + 60
+                    }점이에요!\n조금 더 F에 다가가볼까요?`
+                  : `당신의 T 점수는 ${
+                      Math.floor(Math.random() * 40) + 60
+                    }점이에요!\n조금 더 T에 다가가볼까요?`}
               </div>
             </AnalysisBox>
-            
-            <div style={{ width: "100%", display: "flex", justifyContent: "center", marginTop: "16px" }}>
+
+            <div
+              style={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "16px",
+              }}
+            >
               <button
                 onClick={handleNextRound}
                 style={{
@@ -686,18 +699,24 @@ const Game = () => {
                   lineHeight: 1.4,
                   border: "none",
                   cursor: "pointer",
-                  transition: "all 0.2s"
+                  transition: "all 0.2s",
                 }}
-                onMouseOver={(e) => e.currentTarget.style.background = "var(--Grayscale-gray-20, #E9EBED)"}
-                onMouseOut={(e) => e.currentTarget.style.background = "var(--Grayscale-gray-10, #F6F6F7)"}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.background =
+                    "var(--Grayscale-gray-20, #E9EBED)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.background =
+                    "var(--Grayscale-gray-10, #F6F6F7)")
+                }
               >
-                {currentRound < 5 ? '다음 라운드 이동하기' : '결과 보기'}
+                {currentRound < 5 ? "다음 라운드 이동하기" : "결과 보기"}
               </button>
             </div>
           </>
         )}
 
-        {gameState === 'waiting' && (
+        {gameState === "waiting" && (
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <InputContainer>
               <CharCount>{userResponse.length}/250</CharCount>
@@ -705,7 +724,9 @@ const Game = () => {
                 <StyledInput
                   type="text"
                   value={userResponse}
-                  onChange={(e) => setUserResponse(e.target.value.slice(0, 250))}
+                  onChange={(e) =>
+                    setUserResponse(e.target.value.slice(0, 250))
+                  }
                   placeholder="위로의 말을 전해보세요!"
                   disabled={isSubmitting}
                 />
