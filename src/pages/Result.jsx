@@ -92,11 +92,12 @@ const Result = () => {
 
             <BadgeContainer>
               <Badge color="orange">순위 {rank}위</Badge>
-              <Badge color="orange">상위 {percentile}%</Badge>
+              <Badge color="orange">상위 {Math.round(percentile)}%</Badge>
             </BadgeContainer>
 
             <Description>
-              {user_type}인 당신! {percentile}% 정도의 반대 성향을 갖고 있어요.
+              {user_type}인 당신! {Math.round(percentile)}% 정도의 반대 성향을
+              갖고 있어요.
             </Description>
 
             <AnalysisSection>
