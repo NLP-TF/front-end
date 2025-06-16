@@ -1,55 +1,67 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { getGameSummary } from "../api/summary"; // API 연결
 
-const GameResultPage = () => {
-  // 샘플 데이터
-  const userScore = 430;
-  const maxScore = 750;
-  const userType = "F형";
-  const percentile = 62;
-  const rankings = [
-    { rank: 1, name: "김서연", type: "T형", score: 485 },
-    { rank: 2, name: "이진우", type: "F형", score: 460 },
-    { rank: 3, name: "박정한", type: "T형", score: 455 },
-    { rank: 4, name: "박정한", type: "T형", score: 453 },
-    { rank: 5, name: "박정한", type: "T형", score: 451 },
-    { rank: 30, name: "김은옥", type: "T형", score: 430 },
-  ];
-
+const Result = () => {
+  const [summary, setSummary] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const sessionId = localStorage.getItem("sessionId");
 
-  const handleGoBack = () => {
+  useEffect(() => {
+    const fetchSummary = async () => {
+      try {
+        const data = await getGameSummary(sessionId);
+        console.log("Game summary data:", data);
+        setSummary(data);
+      } catch (err) {
+        console.error("Error fetching game summary:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSummary();
+  }, [sessionId]);
+
+  if (loading || !summary) return <div>로딩 중...</div>;
+
+  const {
+    nickname,
+    user_type,
+    total_score,
+    percentile,
+    rank,
+    top_players,
+    feedback,
+  } = summary;
+
+  const handleRestart = () => {
+    localStorage.removeItem("sessionId");
     navigate("/");
   };
 
   return (
     <Container>
-      {/* 헤더 */}
       <Header>
         <Logo>너 T야?</Logo>
-        <UserInfo>F형</UserInfo>
+        <UserInfo>
+          {user_type}형 {nickname}
+        </UserInfo>
       </Header>
 
-      {/* 메인 컨테이너 */}
       <MainContainer>
-        {/* 타이틀 */}
         <TitleSection>
           <MainTitle>최종 결과</MainTitle>
           <SubTitle>AI가 당신의 위로 스타일을 분석했어요</SubTitle>
         </TitleSection>
 
-        {/* 메인 콘텐츠 */}
         <ContentGrid>
-          {/* 왼쪽: 점수 및 분석 */}
           <ScoreSection>
             <SectionTitle>최종 점수</SectionTitle>
-
-            {/* 점수 원형 차트 */}
             <ChartContainer>
               <CircularChart>
                 <svg width="192" height="192" viewBox="0 0 100 100">
-                  {/* 배경 원 */}
                   <circle
                     cx="50"
                     cy="50"
@@ -58,7 +70,6 @@ const GameResultPage = () => {
                     strokeWidth="8"
                     fill="none"
                   />
-                  {/* 진행률 원 */}
                   <circle
                     cx="50"
                     cy="50"
@@ -67,52 +78,50 @@ const GameResultPage = () => {
                     strokeWidth="8"
                     fill="none"
                     strokeLinecap="round"
-                    strokeDasharray={`${(userScore / maxScore) * 251.2} 251.2`}
+                    strokeDasharray={`${(total_score / 500) * 251.2} 251.2`}
                     transform="rotate(-90 50 50)"
-                    style={{
-                      transition: "stroke-dasharray 1s ease-out",
-                    }}
+                    style={{ transition: "stroke-dasharray 1s ease-out" }}
                   />
                 </svg>
                 <ScoreDisplay>
-                  <MainScore>{userScore}점</MainScore>
-                  <MaxScore>/ {maxScore}점</MaxScore>
+                  <MainScore>{Math.round(total_score)}점</MainScore>
+                  <MaxScore>/ 500점</MaxScore>
                 </ScoreDisplay>
               </CircularChart>
             </ChartContainer>
 
-            {/* 백분위 정보 */}
             <BadgeContainer>
-              <Badge color="orange">순위 2위</Badge>
+              <Badge color="orange">순위 {rank}위</Badge>
               <Badge color="orange">상위 {percentile}%</Badge>
             </BadgeContainer>
 
-            <Description>F인 당신! 62%정도의 T 능력을 가졌어요</Description>
+            <Description>
+              {user_type}인 당신! {percentile}% 정도의 반대 성향을 갖고 있어요.
+            </Description>
 
-            {/* 종합 분석 */}
             <AnalysisSection>
               <AnalysisTitle>종합 분석</AnalysisTitle>
-              <AnalysisText>
-                당신은 F형의 특성이 강하게 나타나므로 T형의 위로 방식을 이해하고
-                학습하면 더 다양한 상황에서 효과적으로 소통할 수 있을 거예요!
-              </AnalysisText>
+              <AnalysisText>{feedback}</AnalysisText>
             </AnalysisSection>
           </ScoreSection>
 
-          {/* 오른쪽: 순위 */}
           <RankingSection>
             <SectionTitle>상위 랭킹</SectionTitle>
-
             <RankingList>
-              {rankings.map((user, index) => (
-                <RankingItem key={index} isCurrentUser={user.name === "김은옥"}>
+              {top_players.map((user, index) => (
+                <RankingItem
+                  key={index}
+                  isCurrentUser={user.nickname === nickname}
+                >
                   <RankingLeft>
-                    <RankBadge rank={user.rank}>{user.rank}</RankBadge>
-                    <UserName>{user.name}</UserName>
+                    <RankBadge rank={index + 1}>{index + 1}</RankBadge>
+                    <UserName>{user.nickname}</UserName>
                   </RankingLeft>
                   <RankingRight>
-                    <TypeBadge type={user.type}>{user.type}</TypeBadge>
-                    <UserScore>{user.score}점</UserScore>
+                    <TypeBadge type={user.user_type}>
+                      {user.user_type}형
+                    </TypeBadge>
+                    <UserScore>{Math.round(user.score)}점</UserScore>
                   </RankingRight>
                 </RankingItem>
               ))}
@@ -120,9 +129,8 @@ const GameResultPage = () => {
           </RankingSection>
         </ContentGrid>
 
-        {/* 다시하기 버튼 */}
         <ButtonContainer>
-          <RestartButton onClick={handleGoBack}>돌아가기</RestartButton>
+          <RestartButton onClick={handleRestart}>돌아가기</RestartButton>
         </ButtonContainer>
       </MainContainer>
     </Container>
@@ -373,4 +381,4 @@ const RestartButton = styled.button`
   }
 `;
 
-export default GameResultPage;
+export default Result;
