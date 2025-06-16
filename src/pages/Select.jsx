@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { theme } from "../styles/theme";
 
 // Layout Components
@@ -314,10 +315,18 @@ const Select = () => {
     setSelectedType(type);
   };
 
+  const navigate = useNavigate();
+
   const handleStartGame = () => {
     if (nickname.trim() && selectedType) {
-      alert(`게임을 시작합니다! 닉네임: ${nickname}, 유형: ${selectedType}`);
-      // 게임 시작 로직 추가
+      // Save user data to localStorage or context if needed
+      localStorage.setItem('userNickname', nickname);
+      localStorage.setItem('userType', selectedType);
+      
+      // Navigate to game page
+      navigate('/game');
+    } else {
+      alert('닉네임과 MBTI 유형을 모두 선택해주세요.');
     }
   };
 
