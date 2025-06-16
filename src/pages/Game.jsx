@@ -648,7 +648,30 @@ const Game = () => {
           </RoundInfo>
         )}
 
-        {(gameState === "submitted" || gameState === "showingAnalysis") && (
+        {gameState === "submitted" && (
+          <AnalysisContainer>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "40px 0",
+                flexDirection: "column",
+                gap: "16px",
+              }}
+            >
+              <ClipLoader
+                color={themeColors.primary}
+                size={40}
+                aria-label="분석 중"
+              />
+              <p style={{ color: theme.colors.gray_700, margin: 0 }}>
+                위로 메시지를 분석 중이에요...
+              </p>
+            </div>
+          </AnalysisContainer>
+        )}
+        {gameState === "showingAnalysis" && (
           <AnalysisContainer>
             <YourResponse>
               <ResponseLabel>당신의 응답</ResponseLabel>
