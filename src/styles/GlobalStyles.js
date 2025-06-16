@@ -1,8 +1,13 @@
 import { createGlobalStyle } from "styled-components";
-import theme from "./theme";
 
 export const GlobalStyles = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+  @font-face {
+    font-family: 'Pretendard';
+    src: url('/src/assets/fonts/PretendardVariable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
   
   * {
     margin: 0;
@@ -16,7 +21,7 @@ export const GlobalStyles = createGlobalStyle`
   }
   
   body {
-    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
       Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     line-height: 1.6;
     color: #333;
@@ -72,25 +77,57 @@ export const GlobalStyles = createGlobalStyle`
   h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     line-height: 1.2;
-    margin-bottom: ${({ theme }) => theme.spacing.md};
+    margin-bottom: 1rem;
   }
   
-  h1 { font-size: ${({ theme }) => theme.textSizes.title1}; }
-  h2 { font-size: ${({ theme }) => theme.textSizes.title2}; }
-  h3 { font-size: ${({ theme }) => theme.textSizes.title3}; }
-  h4 { font-size: ${({ theme }) => theme.textSizes.subtitle1}; }
-  h5 { font-size: ${({ theme }) => theme.textSizes.subtitle2}; }
-  h6 { font-size: ${({ theme }) => theme.textSizes.subtitle3}; }
+  /* Text Sizes */
+  h1 { font-size: 48px; } /* --title48-e-b */
+  h2 { font-size: 32px; } /* --title32-b */
+  h3 { font-size: 28px; } /* --title28-b */
+  h4 { font-size: 24px; } /* --subtitle24-b */
+  h5 { font-size: 22px; } /* --subtitle22-b */
+  h6 { font-size: 20px; } /* --subtitle20-s-b */
   
-  p {
-    font-size: ${({ theme }) => theme.textSizes.body1};
-    margin-bottom: ${({ theme }) => theme.spacing.md};
+  /* Body Text */
+  p, body {
+    font-size: 16px; /* --body16-m */
     line-height: 1.6;
   }
   
-  small {
-    font-size: ${({ theme }) => theme.textSizes.caption};
-    color: ${({ theme }) => theme.colors.gray60};
+  .text-title48 { font-size: 48px; font-weight: 800; } /* --title48-e-b */
+  .text-title32 { font-size: 32px; font-weight: 700; } /* --title32-b */
+  .text-title28 { font-size: 28px; font-weight: 700; } /* --title28-b */
+  .text-subtitle24 { font-size: 24px; font-weight: 700; } /* --subtitle24-b */
+  .text-subtitle22 { font-size: 22px; font-weight: 700; } /* --subtitle22-b */
+  .text-subtitle20 { font-size: 20px; font-weight: 700; } /* --subtitle20-s-b */
+  .text-body20 { font-size: 20px; font-weight: 600; } /* --body20-s-b */
+  .text-body18 { font-size: 18px; font-weight: 600; } /* --body18-s-b */
+  .text-body16 { font-size: 16px; font-weight: 600; } /* --body16-s-b */
+  .text-body14 { font-size: 14px; font-weight: 600; } /* --body14-s-b */
+  .text-body12 { font-size: 12px; font-weight: 500; } /* --body12-m */
+  .text-caption { font-size: 11px; font-weight: 500; } /* --caption11-m */
+  .text-logo { font-size: 32px; } /* --logo */
+  
+  /* Effects */
+  .shadow-main { box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); } /* --main--shad */
+  .shadow-sub { box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.05); } /* --sub--shad-shadows */
+  .shadow-mobile { box-shadow: 0px -1px 9.9px rgba(0, 0, 0, 0.12); } /* --mob--shad */
+  .shadow-tooltip { 
+    box-shadow: 3px 6px 15.3px rgba(0, 0, 0, 0.05), 
+                0px 0px 20px rgba(100, 102, 241, 0.3); /* --t_-shad */
+  }
+  .blur-sub { filter: blur(5.22px); } /* --sub--shad-blur */
+  
+  /* Responsive Typography */
+  @media (max-width: 768px) {
+    h1 { font-size: 32px; }
+    h2 { font-size: 28px; }
+    h3 { font-size: 24px; }
+    h4 { font-size: 22px; }
+    h5 { font-size: 20px; }
+    h6 { font-size: 18px; }
+    
+    p, body { font-size: 14px; }
   }
   
   /* Utility Classes */

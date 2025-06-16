@@ -85,17 +85,23 @@ const Title = styled.h1`
 `;
 
 const Description = styled.p`
-  color: #4b5563;
-  font-size: 16px;
-  font-weight: bold;
-  margin: 0 0 32px 0;
-  white-space: pre-line;
-  line-height: 1.5;
-  width: 100%;
+  ${({ theme }) => `
+    font-size: ${theme.textStyles.body16SB.fontSize};
+    font-weight: ${theme.textStyles.body16SB.fontWeight};
+    line-height: ${theme.textStyles.body16SB.lineHeight};
+    letter-spacing: ${theme.textStyles.body16SB.letterSpacing};
+    color: #4B5563;
+    margin-bottom: 32px;
+    white-space: pre-line;
+  `}
 
   @media (min-width: ${tablet}) {
-    font-size: 22px;
-    margin-bottom: 47px;
+    font-size: ${({ theme }) => theme.textStyles.subtitle22SB.fontSize};
+    font-weight: ${({ theme }) => theme.textStyles.subtitle22SB.fontWeight};
+    line-height: ${({ theme }) => theme.textStyles.subtitle22SB.lineHeight};
+    letter-spacing: ${({ theme }) =>
+      theme.textStyles.subtitle22SB.letterSpacing};
+    margin-bottom: 40px;
   }
 `;
 
@@ -177,7 +183,7 @@ const RightPanel = styled.div`
 
   @media (min-width: ${tablet}) {
     border-radius: 0 48px 48px 0; /* Right side rounded corners */
-    margin-top: 0;
+    margin: 0;
     padding: 0;
     flex: 0 0 400px; /* Fixed width */
     min-width: 500px; /* Same as flex-basis */
@@ -310,7 +316,7 @@ const ModalOverlay = styled.div`
   align-items: center;
   z-index: 1000;
   animation: ${fadeIn} 0.3s ease-out;
-  padding: 30px;
+  padding: 12px;
 `;
 
 const ModalContent = styled.div`
@@ -318,7 +324,7 @@ const ModalContent = styled.div`
   border-radius: 24px;
   width: 100%;
   max-width: 600px;
-  max-height: 90vh;
+  max-height: 80vh;
   overflow-y: auto;
   position: relative;
   animation: ${slideIn} 0.3s ease-out;
@@ -329,20 +335,26 @@ const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 24px;
+  padding: 20px;
   border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
   background: white;
   z-index: 10;
   border-radius: 24px 24px 0 0;
+  @media (min-width: ${tablet}) {
+    padding: 24px;
+  }
 `;
 
 const ModalTitle = styled.h2`
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: #111827;
   margin: 0;
+  @media (min-width: ${tablet}) {
+    font-size: 24px;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -494,7 +506,8 @@ const Home = () => {
                 <RuleItem>
                   <RuleNumber>1</RuleNumber>
                   <RuleText>
-                    당신의 MBTI 유형 중 T(사고형)와 F(감정형) 중 하나를 선택해요
+                    당신의 MBTI 유형 중 T(사고형)와 F(감정형) 중 하나를
+                    선택해요.
                   </RuleText>
                 </RuleItem>
                 <RuleItem>
@@ -506,7 +519,7 @@ const Home = () => {
                 <RuleItem>
                   <RuleNumber>3</RuleNumber>
                   <RuleText>
-                    선택한 유형과 반대되는 스타일의 위로를 제시해요
+                    선택한 유형과 반대되는 스타일의 위로를 제시해요.
                   </RuleText>
                 </RuleItem>
                 <RuleItem>

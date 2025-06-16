@@ -1,23 +1,72 @@
 export const theme = {
-  // Text sizes
-  textSizes: {
-    title1: '48px',
-    title2: '32px',
-    title3: '28px',
-    subtitle1: '24px',
-    subtitle2: '22px',
-    subtitle3: '20px',
-    body1: '18px',
-    body2: '16px',
-    logo: '32px',
-    comp1: '24px',
-    comp2: '20px',
-    label1: '22px',
-    label2: '20px',
-    label3: '16px',
-    label4: '14px',
-    caption: '12px',
-    caption2: '11px',
+  // Text styles with weights and spacing
+  textStyles: {
+    title48EB: {
+      fontSize: '48px',
+      fontWeight: 800,
+      lineHeight: 1.2,
+      letterSpacing: '-0.5px'
+    },
+    title32B: {
+      fontSize: '32px',
+      fontWeight: 700,
+      lineHeight: 1.2,
+      letterSpacing: '-0.3px'
+    },
+    title28B: {
+      fontSize: '28px',
+      fontWeight: 700,
+      lineHeight: 1.3,
+      letterSpacing: '-0.3px'
+    },
+    subtitle24B: {
+      fontSize: '24px',
+      fontWeight: 700,
+      lineHeight: 1.3,
+      letterSpacing: '-0.3px'
+    },
+    subtitle22SB: {
+      fontSize: '22px',
+      fontWeight: 600,
+      lineHeight: 1.4,
+      letterSpacing: '-0.3px'
+    },
+    subtitle20SB: {
+      fontSize: '20px',
+      fontWeight: 600,
+      lineHeight: 1.4,
+      letterSpacing: '-0.3px'
+    },
+    body20SB: {
+      fontSize: '20px',
+      fontWeight: 600,
+      lineHeight: 1.5,
+      letterSpacing: '-0.3px'
+    },
+    body18SB: {
+      fontSize: '18px',
+      fontWeight: 600,
+      lineHeight: 1.5,
+      letterSpacing: '-0.3px'
+    },
+    body16SB: {
+      fontSize: '16px',
+      fontWeight: 600,
+      lineHeight: 1.6,
+      letterSpacing: '-0.3px'
+    },
+    body16M: {
+      fontSize: '16px',
+      fontWeight: 500,
+      lineHeight: 1.6,
+      letterSpacing: '-0.3px'
+    },
+    caption11M: {
+      fontSize: '11px',
+      fontWeight: 500,
+      lineHeight: 1.4,
+      letterSpacing: '0px'
+    }
   },
   
   // Effects
