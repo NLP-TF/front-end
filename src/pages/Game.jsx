@@ -1,389 +1,604 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 
-// Styled Components
-const PageContainer = styled.div`
+const Container = styled.div`
+  width: 100%;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 40px;
+  display: flex;
+  padding: 100px 16px 40px;
+`;
+
+const Header = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 80px;
+  padding: 20px 240px;
+  background: var(--Grayscale-gray-5, #fcfcfc);
+  box-shadow: 3px 6px 15.3px 2px rgba(0, 0, 0, 0.05);
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  display: flex;
+
+  @media (max-width: 768px) {
+    padding: 20px;
+    height: auto;
+    flex-direction: column;
+  }
+`;
+
+const HeaderContent = styled.div`
+  width: 100%;
+  max-width: 1440px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 10px;
+  display: inline-flex;
+`;
+
+const HeaderTop = styled.div`
+  align-self: stretch;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+`;
+
+const Title = styled.div`
+  font-size: 22px;
+  font-family: Pretendard;
+  font-weight: 700;
+  line-height: 30.8px;
+  word-wrap: break-word;
+  span:nth-child(1) {
+    color: var(--Main-T-100, #6c6eed);
+  }
+  span:nth-child(2) {
+    color: var(--Grayscale-gray-100, #171717);
+  }
+  span:nth-child(3) {
+    color: var(--Main-F-100, #f59e0c);
+  }
+  span:nth-child(4) {
+    color: var(--Main-T-100, #6c6eed);
+  }
+`;
+
+const StatusGroup = styled.div`
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  display: flex;
+`;
+
+const Status = styled.div`
+  justify-content: flex-start;
+  align-items: center;
+  display: flex;
+`;
+
+const StatusIconWrapper = styled.div`
+  width: 24px;
+  height: 24px;
+  position: relative;
+  overflow: hidden;
+`;
+
+const StatusText = styled.div`
+  color: var(--Grayscale-gray-100, #171717);
+  font-size: 18px;
+  font-family: Pretendard;
+  font-weight: 600;
+  line-height: 24px;
+  word-wrap: break-word;
+`;
+
+const GameBox = styled.div`
+  width: 100%;
+  max-width: 996px;
+  height: 70vh; /* Fixed viewport height */
+  min-height: 600px; /* Minimum height to ensure content is visible */
+  padding: 40px;
+  margin: 40px 0;
+  background: var(--Grayscale-gray-5, #fcfcfc);
+  box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.05);
+  border-radius: 24px;
+  outline: 1px var(--Grayscale-gray-20, #e9ebed) solid;
+  outline-offset: -1px;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  display: flex;
+  overflow-y: auto; /* Add scrollbar when content overflows */
+`;
+
+const RoundInfo = styled.div`
+  padding: 6px 32px;
+  background: var(--Main-T-100, #6c6eed);
+  border-radius: 48px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  display: flex;
+  color: var(--Grayscale-gray-5, #fcfcfc);
+  font-size: 20px;
+  font-family: Pretendard;
+  font-weight: 600;
+  line-height: 28px;
+`;
+
+const SituationCard = styled.div`
+  width: 100%;
+  padding: 18px 32px;
+  background: var(--Grayscale-gray-5, #fcfcfc);
+  border-radius: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const MessageBubble = styled.div`
+  padding: 12px 18px;
+  border-radius: 24px;
+  font-size: 18px;
+  font-family: Pretendard;
+  font-weight: 600;
+  line-height: 24px;
+  word-wrap: break-word;
+  max-width: 100%;
+`;
+
+const MachineMessage = styled(MessageBubble)`
+  background: var(--Grayscale-gray-20, #e9ebed);
+  border-bottom-left-radius: 2px;
+`;
+
+const UserMessage = styled(MessageBubble)`
+  background: var(--Main-T-10, #e7e7ff);
+  border-bottom-right-radius: 2px;
+`;
+
+const AnalysisBox = styled.div`
+  width: 100%;
+  max-width: 347px;
+  padding: 16px 18px;
+  background: var(--Grayscale-gray-20, #e9ebed);
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
+  gap: 10px;
 `;
 
-const GameContainer = styled.div`
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.xl};
-`;
-
-const GameHeader = styled.div`
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
-
-const GameTitle = styled.h1`
-  font-size: ${({ theme }) => theme.textSizes.title2};
-  color: ${({ theme }) => theme.colors.gray100};
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const ProgressBar = styled.div`
-  width: 100%;
-  height: 8px;
-  background-color: ${({ theme }) => theme.colors.gray10};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  overflow: hidden;
-  margin: ${({ theme }) => theme.spacing.md} 0;
-`;
-
-const ProgressFill = styled.div`
-  height: 100%;
-  background: linear-gradient(90deg, ${({ theme }) => theme.colors.mainT100}, ${({ theme }) => theme.colors.mainT80});
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  transition: width 0.5s ease;
-`;
-
-const ScenarioContainer = styled.div`
-  background-color: ${({ theme }) => theme.colors.gray0};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  padding: ${({ theme }) => theme.spacing.xl};
-  box-shadow: ${({ theme }) => theme.effects.mainShadow};
-`;
-
-const ScenarioText = styled.p`
-  font-size: ${({ theme }) => theme.textSizes.headline};
-  color: ${({ theme }) => theme.colors.gray100};
-  line-height: 1.6;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-  text-align: center;
-`;
-
-const ResponsesTitle = styled.h3`
-  font-size: ${({ theme }) => theme.textSizes.subtitle1};
-  color: ${({ theme }) => theme.colors.gray80};
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
-`;
-
-const ResponseOptions = styled.div`
+const InputBar = styled.div`
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 80px;
+  padding: 12px 16px;
+  background: var(--Grayscale-gray-5, #fcfcfc);
+  box-shadow: 0px -3px 15.3px 2px rgba(0, 0, 0, 0.05);
   display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.md};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-`;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  
+  @media (max-width: 768px) {
+    padding: 12px;
+    height: auto;
+    min-height: 80px;
+  }
 
-const ResponseButton = styled.button`
-  position: relative;
-  padding: ${({ theme }) => theme.spacing.lg};
-  border: 2px solid ${({ theme, $isSelected }) => 
-    $isSelected ? theme.colors.mainT100 : theme.colors.gray20};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  background-color: ${({ theme, $isSelected }) => 
-    $isSelected ? theme.colors.mainT10 : theme.colors.gray0};
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    border-color: ${({ theme }) => theme.colors.mainT100};
-    transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.effects.tShadow};
+  input {
+    flex: 1;
+    height: 56px;
+    padding: 0 20px;
+    border-radius: 28px;
+    border: 1.5px solid var(--Grayscale-gray-30, #d6d8dc);
+    font-family: Pretendard;
+    font-size: 16px;
+    font-weight: 600;
+    outline: none;
+    -webkit-appearance: none;
+    
+    &:focus {
+      border-color: var(--Grayscale-gray-100, #171717);
+    }
   }
-  
-  &:active {
-    transform: translateY(0);
-  }
-  
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-`;
 
-const ResponseType = styled.span`
-  display: inline-block;
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
-  background-color: ${({ theme, $type }) => 
-    $type === 'T' ? theme.colors.systemInfo : theme.colors.systemWin};
-  color: ${({ theme }) => theme.colors.gray0};
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  font-size: ${({ theme }) => theme.textSizes.caption};
-  font-weight: 600;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
-`;
-
-const ResponseText = styled.p`
-  font-size: ${({ theme }) => theme.textSizes.body1};
-  color: ${({ theme }) => theme.colors.gray90};
-  margin: 0;
-  line-height: 1.6;
-`;
-
-const OrDivider = styled.div`
-  text-align: center;
-  margin: ${({ theme }) => theme.spacing.md} 0;
-  color: ${({ theme }) => theme.colors.gray60};
-  font-size: ${({ theme }) => theme.textSizes.body2};
-  position: relative;
-  
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 45%;
-    height: 1px;
-    background-color: ${({ theme }) => theme.colors.gray20};
-  }
-  
-  &::before {
-    left: 0;
-  }
-  
-  &::after {
-    right: 0;
+  button {
+    height: 56px;
+    padding: 0 24px;
+    border-radius: 28px;
+    background: var(--Grayscale-gray-100, #171717);
+    color: white;
+    font-family: Pretendard;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    white-space: nowrap;
+    transition: background 0.2s;
+    
+    &:disabled {
+      background: var(--Grayscale-gray-30, #d6d8dc);
+      cursor: not-allowed;
+    }
+    
+    &:not(:disabled):hover {
+      background: var(--Grayscale-gray-80, #4B5563);
+    }
   }
 `;
 
-const SubmitButton = styled.button`
-  display: block;
-  width: 100%;
-  max-width: 300px;
-  margin: 0 auto;
-  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
-  font-size: ${({ theme }) => theme.textSizes.comp2};
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.gray0};
-  background-color: ${({ theme }) => theme.colors.mainT100};
-  border: none;
-  border-radius: ${({ theme }) => theme.borderRadius.full};
-  cursor: pointer;
-  transition: all 0.3s ease;
-  
-  &:hover:not(:disabled) {
-    background-color: ${({ theme }) => theme.colors.gray80};
-    transform: translateY(-2px);
-    box-shadow: ${({ theme }) => theme.effects.tShadow};
-  }
-  
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-  
-  &:disabled {
-    background-color: ${({ theme }) => theme.colors.gray30};
-    cursor: not-allowed;
-  }
-`;
+// API Service Functions
+const GameAPI = {
+  // Get round information
+  getRoundInfo: async (sessionId, roundNumber) => {
+    // TODO: Implement actual API call
+    // const response = await fetch(`/api/v1/game/round/${sessionId}/${roundNumber}`);
+    // return await response.json();
 
-const pulse = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-`;
-
-const EvaluationResult = styled.div`
-  text-align: center;
-  padding: ${({ theme }) => theme.spacing.lg};
-  margin: ${({ theme }) => theme.spacing.xl} 0;
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  background-color: ${({ theme, $isCorrect }) => 
-    $isCorrect ? theme.colors.systemWin10 : theme.colors.systemLose10};
-  border: 1px solid ${({ theme, $isCorrect }) => 
-    $isCorrect ? theme.colors.systemWin : theme.colors.systemLose};
-  color: ${({ theme, $isCorrect }) => 
-    $isCorrect ? theme.colors.systemWin : theme.colors.systemLose};
-  animation: ${pulse} 1.5s ease-in-out infinite;
-`;
-
-const ScoreText = styled.p`
-  font-size: ${({ theme }) => theme.textSizes.headline};
-  font-weight: 700;
-  margin-top: ${({ theme }) => theme.spacing.sm};
-`;
-
-// Sample scenarios for the game
-const scenarios = [
-  {
-    id: 1,
-    question: '동료가 실수로 중요한 발표 자료를 망쳤을 때, 당신의 반응은?',
-    thinking: '어떤 부분이 문제였는지 분석하고 개선 방안을 제안한다.',
-    feeling: '동료의 기분이 얼마나 상했을지 걱정하며 위로의 말을 건넨다.'
+    // Mock data for now
+    return {
+      round_number: roundNumber,
+      situation: "연인_갈등",
+      scenario: `당신의 연인이 당신의 계획을 무시하고 다른 약속을 잡았을 때 어떻게 반응하시겠습니까? (라운드 ${roundNumber})`,
+    };
   },
-  {
-    id: 2,
-    question: '팀 프로젝트에서 의견이 엇갈릴 때, 당신은?',
-    thinking: '각 의견의 장단점을 논리적으로 분석해 최선의 해결책을 찾는다.',
-    feeling: '팀원들의 감정을 고려해 모두가 만족할 수 있는 중간 지점을 찾는다.'
+
+  // Submit response and get score
+  submitResponse: async (sessionId, roundNumber, userResponse, situation) => {
+    // TODO: Implement actual API call
+    // const response = await fetch('/api/v1/game/submit', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     session_id: sessionId,
+    //     user_response: userResponse,
+    //     round_number: roundNumber,
+    //     situation: situation
+    //   })
+    // });
+    // return await response.json();
+
+    // Mock data for now
+    return {
+      round_number: roundNumber,
+      score: Math.floor(Math.random() * 40) + 60, // Random score between 60-100
+      feedback: "좋은 반응이에요!",
+      is_completed: roundNumber >= 5,
+    };
   },
-  {
-    id: 3,
-    question: '새로운 아이디어를 제시할 때, 당신은?',
-    thinking: '데이터와 사실에 기반해 체계적으로 설명한다.',
-    feeling: '아이디어가 사람들에게 미칠 감정적 영향을 강조한다.'
-  },
-  {
-    id: 4,
-    question: '갈등이 발생했을 때, 당신의 대처 방식은?',
-    thinking: '객관적인 기준을 세우고 논리적으로 해결하려고 노력한다.',
-    feeling: '상대방의 감정을 이해하고 공감하며 해결책을 모색한다.'
-  },
-  {
-    id: 5,
-    question: '의사 결정을 내릴 때, 가장 중요하게 생각하는 것은?',
-    thinking: '합리성과 객관적 데이터',
-    feeling: '사람들의 감정과 가치관'
-  }
-];
+};
 
 const Game = () => {
-  const [currentRound, setCurrentRound] = useState(0);
-  const [userResponses, setUserResponses] = useState([]);
-  const [selectedResponse, setSelectedResponse] = useState('');
-  const [isEvaluating, setIsEvaluating] = useState(false);
-  const [evaluationResult, setEvaluationResult] = useState(null);
-  const navigate = useNavigate();
-
-  // Get user data from localStorage
+  // 모바일 키보드 이벤트 처리
   useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem('userData'));
-    if (!userData || !userData.nickname || !userData.userType) {
-      navigate('/select');
+    const handleResize = () => {
+      // 모바일에서 키보드가 열릴 때 뷰포트 높이 계산
+      const viewportHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      
+      // 키보드가 열려 있을 때만 스크롤 조정
+      if (documentHeight > viewportHeight) {
+        window.scrollTo(0, documentHeight);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [userResponse, setUserResponse] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [roundData, setRoundData] = useState(null);
+  const [gameResult, setGameResult] = useState(null);
+  const [isGameCompleted, setIsGameCompleted] = useState(false);
+  const [sessionId] = useState(() => {
+    // Generate or retrieve session ID
+    return localStorage.getItem("gameSessionId") || `session-${Date.now()}`;
+  });
+
+  // Load round data when component mounts or round changes
+  useEffect(() => {
+    const loadRoundData = async () => {
+      try {
+        const data = await GameAPI.getRoundInfo(sessionId, currentRound);
+        setRoundData(data);
+        setUserResponse("");
+      } catch (error) {
+        console.error("Error loading round data:", error);
+      }
+    };
+
+    if (!isGameCompleted) {
+      loadRoundData();
     }
-  }, [navigate]);
+  }, [currentRound, isGameCompleted, sessionId]);
 
-  const handleResponseSelect = (response) => {
-    setSelectedResponse(response);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!userResponse.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+
+    try {
+      const result = await GameAPI.submitResponse(
+        sessionId,
+        currentRound,
+        userResponse,
+        roundData?.situation
+      );
+
+      setGameResult(result);
+
+      if (result.is_completed || currentRound >= 5) {
+        setIsGameCompleted(true);
+      }
+    } catch (error) {
+      console.error("Error submitting response:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleSubmit = () => {
-    if (!selectedResponse) return;
+  const handleNextRound = () => {
+    if (currentRound < 5) {
+      setCurrentRound((prev) => prev + 1);
+      setGameResult(null);
+    }
+  };
 
-    // Simulate AI evaluation (in a real app, this would be an API call)
-    setIsEvaluating(true);
-    
-    // Simulate API delay
-    setTimeout(() => {
-      const isCorrect = Math.random() > 0.3; // 70% chance of being correct
-      const score = isCorrect ? 10 : 0;
-      
-      setEvaluationResult({
-        isCorrect,
-        score,
-        feedback: isCorrect 
-          ? '잘하셨습니다! 당신의 선택은 반대 유형의 사고방식을 잘 반영하고 있습니다.'
-          : '아쉽네요. 다음 기회에 더 잘할 수 있을 거예요!'
-      });
-      
-      // Save the response
-      const newResponse = {
-        scenarioId: scenarios[currentRound].id,
-        response: selectedResponse,
-        isCorrect,
-        score
-      };
-      
-      setUserResponses([...userResponses, newResponse]);
-      
-      // Reset for next round or finish game
+  // 모바일에서 입력 필드 포커스 시 스크롤 조정
+  const handleInputFocus = () => {
+    if (window.innerWidth <= 768) {
       setTimeout(() => {
-        if (currentRound < scenarios.length - 1) {
-          setCurrentRound(currentRound + 1);
-          setSelectedResponse('');
-          setEvaluationResult(null);
-          setIsEvaluating(false);
-        } else {
-          // Calculate total score and navigate to results
-          const totalScore = [...userResponses, newResponse].reduce(
-            (sum, resp) => sum + resp.score, 0
-          );
-          
-          // Save results to localStorage
-          localStorage.setItem('gameResults', JSON.stringify({
-            totalScore,
-            totalRounds: scenarios.length,
-            responses: [...userResponses, newResponse]
-          }));
-          
-          navigate('/result');
-        }
-      }, 2000);
-    }, 1000);
+        window.scrollTo(0, document.body.scrollHeight);
+      }, 100);
+    }
   };
 
-  const currentScenario = scenarios[currentRound];
-  const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-  
-  // Determine which response is which type based on user's selected type
-  const isThinkingUser = userData.userType === 'T';
-  const responseA = isThinkingUser ? currentScenario.feeling : currentScenario.thinking;
-  const responseB = isThinkingUser ? currentScenario.thinking : currentScenario.feeling;
-  const responseAType = isThinkingUser ? 'F' : 'T';
-  const responseBType = isThinkingUser ? 'T' : 'F';
-  const progressPercentage = ((currentRound) / scenarios.length) * 100;
+  if (isGameCompleted) {
+    return (
+      <Container>
+        <GameBox>
+          <h2>게임 완료!</h2>
+          <p>모든 라운드를 완료하셨습니다.</p>
+          {/* Add final score and feedback summary here */}
+        </GameBox>
+      </Container>
+    );
+  }
+
+  if (!roundData) {
+    return <div>로딩 중...</div>;
+  }
 
   return (
-    <PageContainer>
-      <GameContainer>
-      <GameHeader>
-        <GameTitle>라운드 {currentRound + 1} / {scenarios.length}</GameTitle>
-        <ProgressBar>
-          <ProgressFill style={{ width: `${progressPercentage}%` }} />
-        </ProgressBar>
-      </GameHeader>
-      
-      <ScenarioContainer>
-        <ScenarioText>{currentScenario.question}</ScenarioText>
-        
-        <ResponsesTitle>당신의 반응을 선택하세요:</ResponsesTitle>
-        
-        <ResponseOptions>
-          <ResponseButton
-            onClick={() => handleResponseSelect(responseA)}
-            disabled={isEvaluating}
-            $isSelected={selectedResponse === responseA}
+    <Container>
+      <Header>
+        <HeaderContent>
+          <HeaderTop>
+            <Title>
+              <span>너</span>
+              <span> </span>
+              <span>T</span>
+              <span>야?</span>
+            </Title>
+            <StatusGroup>
+              <Status>
+                <StatusIconWrapper>
+                  <div
+                    style={{
+                      width: 8,
+                      height: 8,
+                      left: 8,
+                      top: 4,
+                      position: "absolute",
+                      borderRadius: 9999,
+                      border: "1.5px var(--Grayscale-gray-100, #171717) solid",
+                    }}
+                  />
+                  <div
+                    style={{
+                      width: 12,
+                      height: 5.51,
+                      left: 6,
+                      top: 14,
+                      position: "absolute",
+                      outline: "1.5px var(--Grayscale-gray-100, #171717) solid",
+                      outlineOffset: "-0.75px",
+                    }}
+                  />
+                </StatusIconWrapper>
+                <StatusText>F형</StatusText>
+              </Status>
+              <Status>
+                <StatusIconWrapper>
+                  <div
+                    style={{
+                      width: 24,
+                      height: 24,
+                      left: 0,
+                      top: 0,
+                      position: "absolute",
+                      background: "var(--Grayscale-gray-30, #D6D8DC)",
+                    }}
+                  />
+                  <div
+                    style={{
+                      width: 17,
+                      height: 17,
+                      left: 3.5,
+                      top: 3.5,
+                      position: "absolute",
+                      background: "var(--Grayscale-gray-100, #171717)",
+                    }}
+                  />
+                </StatusIconWrapper>
+                <StatusText>0점</StatusText>
+              </Status>
+            </StatusGroup>
+          </HeaderTop>
+        </HeaderContent>
+      </Header>
+      <GameBox>
+        <RoundInfo>Round 1</RoundInfo>
+        <SituationCard>
+          <div
+            style={{
+              color: "var(--Grayscale-gray-100, #171717)",
+              fontWeight: 600,
+              fontSize: 20,
+            }}
           >
-            <ResponseType $type={responseAType}>Type {responseAType}</ResponseType>
-            <ResponseText>{responseA}</ResponseText>
-          </ResponseButton>
-          
-          <OrDivider>또는</OrDivider>
-          
-          <ResponseButton
-            onClick={() => handleResponseSelect(responseB)}
-            disabled={isEvaluating}
-            $isSelected={selectedResponse === responseB}
+            상황설명
+          </div>
+          <div
+            style={{
+              color: "var(--Grayscale-gray-80, #4B5563)",
+              fontWeight: 600,
+              fontSize: 18,
+            }}
           >
-            <ResponseType $type={responseBType}>Type {responseBType}</ResponseType>
-            <ResponseText>{responseB}</ResponseText>
-          </ResponseButton>
-        </ResponseOptions>
-        
-        {evaluationResult && (
-          <EvaluationResult $isCorrect={evaluationResult.isCorrect}>
-            <p>{evaluationResult.feedback}</p>
-            {evaluationResult.isCorrect && (
-              <ScoreText>+{evaluationResult.score}점 획득!</ScoreText>
-            )}
-          </EvaluationResult>
-        )}
-        
-        <SubmitButton 
-          onClick={handleSubmit}
-          disabled={!selectedResponse || isEvaluating}
+            소중한 물건을 잃어버려서 많이 낙심하고 있는 친구
+          </div>
+        </SituationCard>
+        <MachineMessage>
+          남자친구가 사준 반지를 잃어버렸어 어떡하지
+        </MachineMessage>
+        <UserMessage>헐 어떡해 마음이 너무 안 좋겠다</UserMessage>
+        <AnalysisBox>
+          <div
+            style={{
+              fontSize: 18,
+              color: "var(--Grayscale-gray-80, #4B5563)",
+              fontWeight: 600,
+            }}
+          >
+            당신의 F 점수는 62점이에요!
+            <br />
+            조금 더 F에 다가가볼까요?
+          </div>
+        </AnalysisBox>
+        <InputBar>위로의 말을 전해보세요!</InputBar>
+      </GameBox>
+
+      {/* Fixed Bottom Input Area */}
+      {!gameResult ? (
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+          }}
         >
-          {isEvaluating ? '평가 중...' : '제출하기'}
-        </SubmitButton>
-      </ScenarioContainer>
-      </GameContainer>
-    </PageContainer>
+          <InputBar>
+            <input
+              type="text"
+              value={userResponse}
+              onChange={(e) => setUserResponse(e.target.value)}
+              onFocus={handleInputFocus}
+              placeholder="답변을 입력하세요..."
+              disabled={isSubmitting}
+            />
+            <button
+              type="submit"
+              disabled={isSubmitting || !userResponse.trim()}
+            >
+              {isSubmitting ? "제출 중..." : "제출"}
+            </button>
+          </InputBar>
+        </form>
+      ) : (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            padding: "20px 240px",
+            background: "var(--Grayscale-gray-5, #fcfcfc)",
+            boxShadow: "0px -3px 15.3px 2px rgba(0, 0, 0, 0.05)",
+            textAlign: "center",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "24px",
+              height: "56px",
+            }}
+          >
+            <div style={{ textAlign: "left" }}>
+              <h3
+                style={{
+                  margin: 0,
+                  fontSize: "18px",
+                  fontWeight: 600,
+                  color: "#171717",
+                }}
+              >
+                점수: {gameResult.score}점
+              </h3>
+              <p
+                style={{
+                  margin: "4px 0 0",
+                  fontSize: "16px",
+                  color: "#4B5563",
+                }}
+              >
+                {gameResult.feedback}
+              </p>
+            </div>
+            <button
+              onClick={handleNextRound}
+              disabled={isSubmitting || currentRound >= 5}
+              style={{
+                height: "56px",
+                padding: "0 32px",
+                borderRadius: "28px",
+                background:
+                  isSubmitting || currentRound >= 5 ? "#d6d8dc" : "#171717",
+                color: "white",
+                fontFamily: "Pretendard",
+                fontSize: "18px",
+                fontWeight: 600,
+                border: "none",
+                cursor:
+                  isSubmitting || currentRound >= 5 ? "not-allowed" : "pointer",
+                transition: "background 0.2s",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {currentRound < 5 ? "다음 라운드" : "결과 보기"}
+            </button>
+          </div>
+        </div>
+      )}
+    </Container>
   );
 };
 
