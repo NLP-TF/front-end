@@ -351,7 +351,7 @@ const Select = () => {
             <Title>
               너<span>T</span>야?
             </Title>
-            <Subtitle>당신의 MBTI 유형을 선택해주세요</Subtitle>
+            <Subtitle>T처럼 판단하기 vs F처럼 이해하기</Subtitle>
           </HeaderSection>
 
           <FormSection>

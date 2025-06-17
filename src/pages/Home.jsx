@@ -89,9 +89,9 @@ const Title = styled.h1`
     line-height: ${({ theme }) => theme.textStyles.title48EB.lineHeight};
     letter-spacing: ${({ theme }) => theme.textStyles.title48EB.letterSpacing};
   }
-  
+
   span {
-    color: #6C6EED; /* Main/F 100 */
+    color: #6c6eed; /* Main/F 100 */
   }
 `;
 
@@ -468,7 +468,9 @@ const Home = () => {
       <PageWrapper>
         <ContentBox>
           <LeftPanel>
-            <Title>너 <span>T</span>야?</Title>
+            <Title>
+              너 <span>T</span>야?
+            </Title>
             <Description>
               {"MBTI의 T/F 유형별 위로 스타일을\n판단하는 시뮬레이션 게임"}
             </Description>
@@ -491,7 +493,7 @@ const Home = () => {
               </ImageTitle>
               <ImageWrapper>
                 <StyledImage
-                  src="https://storage.googleapis.com/tagjs-prod.appspot.com/v1/J8I8UMtsQN/ritkf71q_expires_30_days.png"
+                  src="https://i.ibb.co/bg4rsP0Z/Frame.png"
                   alt="게임 일러스트레이션"
                 />
               </ImageWrapper>
@@ -517,8 +519,10 @@ const Home = () => {
                 <RuleItem>
                   <RuleNumber>1</RuleNumber>
                   <RuleText>
-                    당신의 MBTI 유형 중 T(사고형)와 F(감정형) 중 하나를
-                    선택해요.
+                    MBTI 유형 중{" "}
+                    <span style={{ color: "#6c6eed" }}>T(사고형)</span>와{" "}
+                    <span style={{ color: "#f59e0c" }}>F(감정형)</span> 중
+                    하나를 선택해요.
                   </RuleText>
                 </RuleItem>
                 <RuleItem>
@@ -529,9 +533,7 @@ const Home = () => {
                 </RuleItem>
                 <RuleItem>
                   <RuleNumber>3</RuleNumber>
-                  <RuleText>
-                    선택한 유형과 반대되는 스타일의 위로를 제시해요.
-                  </RuleText>
+                  <RuleText>선택한 유형의 스타일로 위로를 제시해요.</RuleText>
                 </RuleItem>
                 <RuleItem>
                   <RuleNumber>4</RuleNumber>
