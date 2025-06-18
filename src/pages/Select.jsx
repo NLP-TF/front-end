@@ -6,7 +6,7 @@ import { ClipLoader } from "react-spinners";
 
 // Layout Components
 const PageContainer = styled.div`
-  background: #ffffff;
+  background: #f8f9ff;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

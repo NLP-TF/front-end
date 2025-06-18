@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+
+const MeBadge = styled.span`
+  font-size: 12px;
+  color: #6b7280;
+  margin-left: 4px;
+`;
 import { getGameSummary } from "../api/summary"; // API 연결
 
 const Result = () => {
@@ -32,9 +38,63 @@ const Result = () => {
     total_score,
     percentile,
     rank,
-    top_players,
-    feedback,
+    top_players: originalTopPlayers,
   } = summary;
+
+  // 현재 사용자 정보를 포함한 랭킹 목록 생성
+  const currentUser = {
+    nickname,
+    user_type,
+    score: total_score, // total_score를 score로 매핑
+    percentile,
+    rank: parseInt(rank, 10),
+  };
+
+  // 기존 top_players의 점수 필드명을 score로 통일
+  const normalizedTopPlayers = originalTopPlayers.map((player) => ({
+    ...player,
+    score: player.score || player.total_score,
+    rank: parseInt(player.rank, 10),
+  }));
+
+  // 현재 사용자를 포함한 전체 플레이어 목록 생성 및 랭크 순서대로 정렬
+  const allPlayers = [...normalizedTopPlayers, currentUser];
+
+  // 상위 5명 + 현재 사용자 (중복 제거)
+  const topPlayers = Array.from(
+    new Map(allPlayers.map((item) => [item.nickname, item])).values()
+  )
+    .sort((a, b) => a.rank - b.rank)
+    .slice(0, 5);
+
+  // 평균 점수 계산 (500점 만점을 100점 만점으로 변환)
+  const avg_score = (total_score / 500) * 100;
+
+  // 사용자 유형에 따른 피드백 생성
+  const getFeedback = () => {
+    const is_thinking = user_type === "T";
+
+    if (is_thinking) {
+      if (avg_score >= 75) {
+        return "T 유형의 사고 방식을 정말 잘 활용하고 계시네요! 논리적이고 분석적인 접근이 돋보입니다.";
+      } else if (avg_score >= 50) {
+        return "T 유형의 사고 방식을 잘 활용하고 계시네요. 조금 더 논리적으로 접근해보는 건 어떨까요?";
+      } else {
+        return "T 유형의 사고 방식을 이해하는 데 조금 어려움이 있으신 것 같아요. 논리적인 사고에 대한 이해를 높이기 위해 노력해보세요!";
+      }
+    } else {
+      // Feeling type
+      if (avg_score >= 75) {
+        return "F 유형의 감정을 정말 잘 이해하고 있어요! 상대방의 감정에 공감하는 능력이 뛰어나네요.";
+      } else if (avg_score >= 50) {
+        return "F 유형의 감정을 잘 이해하고 있어요. 조금 더 감정적인 표현을 연습해보는 건 어떨까요?";
+      } else {
+        return "F 유형의 감정을 이해하는 데 조금 어려움이 있으신 것 같아요. 상대방의 감정에 더 공감하려는 노력이 필요해 보여요.";
+      }
+    }
+  };
+
+  const feedback = getFeedback();
 
   const handleRestart = () => {
     localStorage.removeItem("sessionId");
@@ -44,7 +104,9 @@ const Result = () => {
   return (
     <Container>
       <Header>
-        <Logo>너 T야?</Logo>
+        <Logo>
+          너 <span>T</span>야?
+        </Logo>
         <UserInfo>
           {user_type}형 {nickname}
         </UserInfo>
@@ -74,7 +136,11 @@ const Result = () => {
                     cx="50"
                     cy="50"
                     r="40"
-                    stroke="#f59e0b"
+                    stroke={
+                      user_type === "F"
+                        ? "var(--Main-F-70, #E6B84F)"
+                        : "var(--Main-T-70, #6B6BFF)"
+                    }
                     strokeWidth="8"
                     fill="none"
                     strokeLinecap="round"
@@ -91,13 +157,13 @@ const Result = () => {
             </ChartContainer>
 
             <BadgeContainer>
-              <Badge color="orange">순위 {rank}위</Badge>
-              <Badge color="orange">상위 {Math.round(percentile)}%</Badge>
+              <Badge userType={user_type}>순위 {rank}위</Badge>
+              <Badge userType={user_type}>상위 {Math.round(percentile)}%</Badge>
             </BadgeContainer>
 
             <Description>
-              {user_type}인 당신! {Math.round(percentile)}% 정도의 반대 성향을
-              갖고 있어요.
+              {nickname}님은 상위 {Math.round(percentile)}% 정도의 {user_type}{" "}
+              능력을 가졌어요.{" "}
             </Description>
 
             <AnalysisSection>
@@ -109,20 +175,28 @@ const Result = () => {
           <RankingSection>
             <SectionTitle>상위 랭킹</SectionTitle>
             <RankingList>
-              {top_players.map((user, index) => (
-                <RankingItem
-                  key={index}
-                  isCurrentUser={user.nickname === nickname}
-                >
+              {topPlayers.map((user, index) => (
+                <RankingItem key={user.nickname}>
                   <RankingLeft>
-                    <RankBadge rank={index + 1}>{index + 1}</RankBadge>
-                    <UserName>{user.nickname}</UserName>
+                    <RankBadge
+                      rank={parseInt(user.rank, 10)}
+                      user_type={user_type}
+                    >
+                      {parseInt(user.rank)}
+                    </RankBadge>
+                    <UserName>
+                      {user.nickname}
+                      {user.nickname === nickname && <MeBadge>(나)</MeBadge>}
+                    </UserName>
                   </RankingLeft>
                   <RankingRight>
                     <TypeBadge type={user.user_type}>
                       {user.user_type}형
                     </TypeBadge>
-                    <UserScore>{Math.round(user.score)}점</UserScore>
+                    <UserScore>
+                      {Math.round(parseInt(user.score || user.total_score, 10))}
+                      점
+                    </UserScore>
                   </RankingRight>
                 </RankingItem>
               ))}
@@ -156,9 +230,12 @@ const Header = styled.div`
 `;
 
 const Logo = styled.div`
-  color: #2563eb;
+  color: #000000;
   font-weight: 700;
   font-size: 20px;
+  span {
+    color: #6c6eed; /* Main/F 100 */
+  }
 `;
 
 const UserInfo = styled.div`
@@ -264,8 +341,13 @@ const Badge = styled.div`
   display: inline-flex;
   align-items: center;
   background-color: ${(props) =>
-    props.color === "orange" ? "#fed7aa" : "#dbeafe"};
-  color: ${(props) => (props.color === "orange" ? "#c2410c" : "#1d4ed8")};
+    props.userType === "F"
+      ? props.theme.colors.mainF10
+      : props.theme.colors.mainT10};
+  color: ${(props) =>
+    props.userType === "F"
+      ? props.theme.colors.mainF100
+      : props.theme.colors.mainT100};
   padding: 4px 12px;
   border-radius: 20px;
   font-size: 14px;
@@ -330,10 +412,20 @@ const RankBadge = styled.div`
     if (props.rank === 1) return "#fbbf24";
     if (props.rank === 2) return "#9ca3af";
     if (props.rank === 3) return "#fb923c";
-    if (props.rank === 30) return "#fed7aa";
+    // 4위부터는 user_type에 따라 색상 변경
+    if (props.rank !== 1 && props.rank !== 2 && props.rank !== 3)
+      return props.user_type === "F"
+        ? props.theme.colors.mainF10
+        : props.theme.colors.mainT10;
     return "#dbeafe";
   }};
-  color: ${(props) => (props.rank === 30 ? "#c2410c" : "white")};
+  color: ${(props) => {
+    if (props.rank !== 1 && props.rank !== 2 && props.rank !== 3)
+      return props.user_type === "F"
+        ? props.theme.colors.mainF100
+        : props.theme.colors.mainT100;
+    return "#ffffff";
+  }};
 `;
 
 const UserName = styled.div`
@@ -347,14 +439,20 @@ const RankingRight = styled.div`
   gap: 8px;
 `;
 
-const TypeBadge = styled.span`
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
+const TypeBadge = styled.div`
   background-color: ${(props) =>
-    props.type === "T형" ? "#dbeafe" : "#dcfce7"};
-  color: ${(props) => (props.type === "T형" ? "#1d4ed8" : "#166534")};
+    props.type === "F"
+      ? props.theme.colors.mainF10
+      : props.theme.colors.mainT10};
+  color: ${(props) =>
+    props.type === "F"
+      ? props.theme.colors.mainF100
+      : props.theme.colors.mainT100};
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-right: 8px;
 `;
 
 const UserScore = styled.span`

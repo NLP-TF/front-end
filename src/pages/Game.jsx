@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import styled, { useTheme } from "styled-components";
+import styled, { useTheme, keyframes } from "styled-components";
 import { getRound } from "../api/round";
 import { submitResponse } from "../api/submit";
 import { ClipLoader } from "react-spinners";
@@ -66,6 +66,10 @@ const Status = styled.div`
 `;
 
 const StatusIconWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 24px;
   height: 24px;
   position: relative;
@@ -234,8 +238,21 @@ const FriendMessage = styled.div`
   }
 `;
 
+// 애니메이션 키프레임 정의
+const slideUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
 const UserMessage = styled.div`
   padding: 12px 18px;
+  animation: ${slideUp} 0.4s ease-out forwards;
   background: ${(props) =>
     props.userType === "F"
       ? "var(--Main-F-10, #F9E9CD)"
@@ -406,6 +423,8 @@ const Game = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [scores, setScores] = useState({ score: 0, totalScore: 0 });
+  const [isMessageAnimationComplete, setIsMessageAnimationComplete] =
+    useState(false);
 
   const theme = useTheme();
   const navigate = useNavigate();
@@ -647,40 +666,46 @@ const Game = () => {
           gameState === "showingAnalysis") && (
           <div style={{ width: "100%" }}>
             <UserMessageBox>
-              <UserMessage userType={userType}>{userResponse}</UserMessage>
+              <UserMessage
+                userType={userType}
+                onAnimationEnd={() => setIsMessageAnimationComplete(true)}
+              >
+                {userResponse}
+              </UserMessage>
             </UserMessageBox>
           </div>
         )}
 
-        {/* Loading indicator - shown only while analyzing */}
-        {(gameState === "submitted" || gameState === "analyzing") && (
-          <div
-            style={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "20px",
-            }}
-          >
+        {/* Loading indicator - shown only while analyzing and after message animation completes */}
+        {(gameState === "submitted" || gameState === "analyzing") &&
+          isMessageAnimationComplete && (
             <div
               style={{
+                width: "100%",
                 display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "16px",
+                justifyContent: "center",
+                marginTop: "20px",
               }}
             >
-              <ClipLoader
-                color={themeColors.primary}
-                size={40}
-                aria-label="분석 중"
-              />
-              <p style={{ color: theme.colors.gray_700, margin: 0 }}>
-                위로 메시지를 분석 중이에요...
-              </p>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: "16px",
+                }}
+              >
+                <ClipLoader
+                  color={themeColors.primary}
+                  size={40}
+                  aria-label="분석 중"
+                />
+                <p style={{ color: theme.colors.gray_700, margin: 0 }}>
+                  위로 메시지를 분석 중이에요...
+                </p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
         {/* Score display - shown inside friend's message after analysis */}
         {gameState === "showingAnalysis" && (
