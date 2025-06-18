@@ -79,7 +79,6 @@ const StatusIconWrapper = styled.div`
 const StatusText = styled.div`
   color: var(--Grayscale-gray-100, #171717);
   font-size: 18px;
-  font-family: Pretendard;
   font-weight: 600;
   line-height: 24px;
   word-wrap: break-word;
@@ -135,7 +134,6 @@ const RoundNumber = styled.div`
   display: flex;
   color: white;
   font-size: 20px;
-  font-family: Pretendard;
   font-weight: 600;
   line-height: 28px;
   white-space: nowrap;
@@ -147,7 +145,6 @@ const RoundNumber = styled.div`
 
 const RoundSubtitle = styled.div`
   color: var(--Grayscale-gray-100, #171717);
-  font-family: Pretendard;
   font-size: 20px;
   font-style: normal;
   font-weight: 600;
@@ -181,7 +178,6 @@ const Situation = styled.div`
   font-size: 20px;
   font-weight: 600;
   line-height: 32px;
-  font-family: "Pretendard", sans-serif;
   @media (max-width: 768px) {
     font-size: 14px;
     line-height: 24px;
@@ -193,7 +189,6 @@ const SituationDetail = styled.div`
   font-size: 18px;
   font-weight: 600;
   line-height: 24px;
-  font-family: "Pretendard", sans-serif;
   @media (max-width: 768px) {
     font-size: 14px;
     line-height: 24px;
@@ -225,7 +220,6 @@ const FriendMessage = styled.div`
   border-bottom-left-radius: 2px;
   color: var(--Grayscale-gray-80, #4b5563);
   font-size: 18px;
-  font-family: "Pretendard", sans-serif;
   font-weight: 600;
   line-height: 24px;
   word-wrap: break-word;
@@ -263,7 +257,6 @@ const UserMessage = styled.div`
   border-bottom-left-radius: 24px;
   color: var(--Grayscale-gray-80, #4b5563);
   font-size: 18px;
-  font-family: "Pretendard", sans-serif;
   font-weight: 600;
   line-height: 24px;
   word-wrap: break-word;
@@ -288,7 +281,6 @@ const AnalysisLabel = styled.div`
   color: var(--Grayscale-gray-80, #4b5563);
   font-size: 14px;
   font-weight: 600;
-  font-family: "Pretendard", sans-serif;
 `;
 
 const AnalysisText = styled.div`
@@ -318,11 +310,11 @@ const InputContainer = styled.div`
 `;
 
 const Input = styled.input`
+  font-family: Pretendard;
   flex: 1;
   border: none;
   background: transparent;
   color: var(--Grayscale-gray-80, #4b5563);
-  font-family: "Pretendard", sans-serif;
   font-size: 18px;
   font-weight: 600;
   line-height: 24px;
@@ -383,7 +375,6 @@ const NextRoundButton = styled.button`
   justify-content: center;
   align-items: center;
   font-size: 16px;
-  font-family: "Pretendard", sans-serif;
   font-weight: 600;
   line-height: 1.4;
   cursor: pointer;
