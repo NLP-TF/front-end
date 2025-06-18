@@ -23,61 +23,32 @@ const Header = styled.div`
   right: 0;
   z-index: 1000;
   height: 80px;
-  padding: 20px 240px;
+  padding: 20px 0;
   background: var(--Grayscale-gray-5, #fcfcfc);
   box-shadow: 3px 6px 15.3px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  display: flex;
 
   @media (max-width: 768px) {
-    padding: 20px;
+    padding: 15px 16px;
     height: auto;
-    flex-direction: column;
   }
 `;
 
 const HeaderContent = styled.div`
   width: 100%;
-  max-width: 1440px;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 10px;
-  display: inline-flex;
-`;
-
-const HeaderTop = styled.div`
-  align-self: stretch;
+  max-width: 996px;
+  padding: 0 20px;
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  display: flex;
+  gap: 20px;
+  margin: 0 auto;
 
   @media (max-width: 768px) {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-`;
-
-const Title = styled.div`
-  font-size: 22px;
-  font-family: Pretendard;
-  font-weight: 700;
-  line-height: 30.8px;
-  word-wrap: break-word;
-  span:nth-child(1) {
-    color: var(--Main-T-100, #6c6eed);
-  }
-  span:nth-child(2) {
-    color: var(--Grayscale-gray-100, #171717);
-  }
-  span:nth-child(3) {
-    color: var(--Main-F-100, #f59e0c);
-  }
-  span:nth-child(4) {
-    color: var(--Main-T-100, #6c6eed);
+    padding: 0;
+    max-width: 100%;
   }
 `;
 
@@ -110,13 +81,6 @@ const StatusText = styled.div`
   word-wrap: break-word;
 `;
 
-const StatusDivider = styled.div`
-  width: 1px;
-  height: 16px;
-  background: var(--Grayscale-gray-30, #d6d8dc);
-  margin: 0 10px;
-`;
-
 const GameBox = styled.div`
   width: 100%;
   max-width: 996px;
@@ -143,6 +107,20 @@ const RoundInfo = styled.div`
   gap: 20px;
 `;
 
+const RoundHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+  }
+`;
+
 const RoundNumber = styled.div`
   padding: 6px 32px;
   background: var(--primary);
@@ -156,7 +134,26 @@ const RoundNumber = styled.div`
   font-family: Pretendard;
   font-weight: 600;
   line-height: 28px;
-  align-self: flex-start;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+`;
+
+const RoundSubtitle = styled.div`
+  color: var(--Grayscale-gray-100, #171717);
+  font-family: Pretendard;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 32px; /* 160% */
+  margin-top: 4px;
+  margin-left: 8px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
 `;
 
 const SituationCard = styled.div`
@@ -168,6 +165,11 @@ const SituationCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
+
+  @media (max-width: 768px) {
+    padding: 12px 16px;
+    gap: 0px;
+  }
 `;
 
 const Situation = styled.div`
@@ -176,6 +178,10 @@ const Situation = styled.div`
   font-weight: 600;
   line-height: 32px;
   font-family: "Pretendard", sans-serif;
+  @media (max-width: 768px) {
+    font-size: 14px;
+    line-height: 24px;
+  }
 `;
 
 const SituationDetail = styled.div`
@@ -184,36 +190,74 @@ const SituationDetail = styled.div`
   font-weight: 600;
   line-height: 24px;
   font-family: "Pretendard", sans-serif;
+  @media (max-width: 768px) {
+    font-size: 14px;
+    line-height: 24px;
+  }
 `;
 
 const FriendMessageBox = styled.div`
   width: 100%;
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
-  padding: 20px;
-  background: var(--Grayscale-gray-10, #f6f6f7);
-  border-radius: 24px;
+  gap: 10px;
 `;
 
-const FriendAvatar = styled.div`
-  width: 40px;
-  height: 40px;
-  background: var(--Grayscale-gray-20, #e9ebed);
-  border-radius: 50%;
+const UserMessageBox = styled.div`
+  width: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
 `;
 
 const FriendMessage = styled.div`
-  flex: 1;
-  color: var(--Grayscale-gray-100, #171717);
+  padding: 12px 18px;
+  background: var(--Grayscale-gray-20, #e9ebed);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 24px;
+  border-bottom-left-radius: 2px;
+  color: var(--Grayscale-gray-80, #4b5563);
   font-size: 18px;
+  font-family: "Pretendard", sans-serif;
   font-weight: 600;
   line-height: 24px;
+  word-wrap: break-word;
+  max-width: 90%;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    line-height: 22px;
+    padding: 10px 16px;
+  }
+`;
+
+const UserMessage = styled.div`
+  padding: 12px 18px;
+  background: ${(props) =>
+    props.userType === "F"
+      ? "var(--Main-F-10, #F9E9CD)"
+      : "var(--Main-T-10, #E7E7FF)"};
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 24px;
+  color: var(--Grayscale-gray-80, #4b5563);
+  font-size: 18px;
   font-family: "Pretendard", sans-serif;
+  font-weight: 600;
+  line-height: 24px;
+  word-wrap: break-word;
+  max-width: 90%;
+  text-align: left;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    line-height: 22px;
+    padding: 10px 16px;
+  }
 `;
 
 const AnalysisContainer = styled.div`
@@ -221,41 +265,6 @@ const AnalysisContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-`;
-
-const YourResponse = styled.div`
-  width: 100%;
-  padding: 20px;
-  background: var(--primary-light);
-  border-radius: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const ResponseLabel = styled.div`
-  color: var(--Grayscale-gray-80, #4b5563);
-  font-size: 14px;
-  font-weight: 600;
-  font-family: "Pretendard", sans-serif;
-`;
-
-const ResponseText = styled.div`
-  color: var(--Grayscale-gray-100, #171717);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 24px;
-  font-family: "Pretendard", sans-serif;
-`;
-
-const AnalysisResult = styled.div`
-  width: 100%;
-  padding: 20px;
-  background: var(--Grayscale-gray-10, #f6f6f7);
-  border-radius: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 `;
 
 const AnalysisLabel = styled.div`
@@ -267,10 +276,6 @@ const AnalysisLabel = styled.div`
 
 const AnalysisText = styled.div`
   color: var(--Grayscale-gray-100, #171717);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 24px;
-  font-family: "Pretendard", sans-serif;
 `;
 
 const FormContainer = styled.form`
@@ -289,6 +294,10 @@ const InputContainer = styled.div`
   background: var(--Grayscale-gray-5, #fcfcfc);
   border: 1.5px solid var(--Grayscale-gray-30, #d6d8dc);
   border-radius: 100px;
+
+  @media (max-width: 768px) {
+    padding: 8px 10px 8px 18px;
+  }
 `;
 
 const Input = styled.input`
@@ -308,6 +317,11 @@ const Input = styled.input`
 
   &:disabled {
     color: var(--Grayscale-gray-40, #9ca3af);
+  }
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    line-height: 22px;
   }
 `;
 
@@ -549,114 +563,110 @@ const Game = () => {
     >
       <Header>
         <HeaderContent>
-          <HeaderTop>
-            <Status>
-              <StatusGroup>
-                <StatusIconWrapper>
-                  <div
-                    style={{
-                      backgroundColor: themeColors.primary,
-                      borderRadius: "50%",
-                      width: "24px",
-                      height: "24px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <span
-                      style={{
-                        color: "white",
-                        fontSize: "12px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {currentRound}
-                    </span>
-                  </div>
-                </StatusIconWrapper>
-                <StatusText>라운드 {currentRound}/5</StatusText>
-              </StatusGroup>
-              <StatusDivider />
-              <StatusGroup>
-                <StatusIconWrapper>
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
-                      stroke="#4b5563"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="M12 6V12L16 14"
-                      stroke="#4b5563"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </StatusIconWrapper>
-                <StatusText>15:00</StatusText>
-              </StatusGroup>
-            </Status>
-          </HeaderTop>
+          <StatusGroup>
+            <StatusIconWrapper>
+              <div
+                style={{
+                  backgroundColor: themeColors.primary,
+                  borderRadius: "50%",
+                  width: "24px",
+                  height: "24px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <span
+                  style={{
+                    color: "white",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                  }}
+                >
+                  {currentRound}
+                </span>
+              </div>
+            </StatusIconWrapper>
+            <StatusText>Round {currentRound}/5</StatusText>
+          </StatusGroup>
+
+          <StatusGroup>
+            <StatusIconWrapper>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M20 21V19C20 16.7909 18.2091 15 16 15H8C5.79086 15 4 16.7909 4 19V21"
+                  stroke="#4b5563"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
+                  stroke="#4b5563"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </StatusIconWrapper>
+            <StatusText>
+              {localStorage.getItem("userNickname") || "User"}
+            </StatusText>
+          </StatusGroup>
         </HeaderContent>
       </Header>
 
       <GameBox>
-        {gameState === "waiting" && (
-          <RoundInfo>
-            <RoundNumber>라운드 {currentRound}</RoundNumber>
-            <SituationCard>
-              <Situation>{roundData.situation}</Situation>
-              <SituationDetail>{roundData.situation_detail}</SituationDetail>
-            </SituationCard>
-            <FriendMessageBox>
-              <FriendAvatar>
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M20 21V19C20 16.7909 18.2091 15 16 15H8C5.79086 15 4 16.7909 4 19V21"
-                    stroke="#171717"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
-                    stroke="#171717"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </FriendAvatar>
-              <FriendMessage>{roundData.friend_message}</FriendMessage>
-            </FriendMessageBox>
-          </RoundInfo>
+        <RoundInfo>
+          <RoundHeader>
+            <RoundNumber>Round {currentRound}</RoundNumber>
+            <RoundSubtitle>
+              {isLearningF
+                ? "F처럼 따뜻한 위로를 건네주세요"
+                : "T처럼 이성적인 답변을 제시해보세요"}
+            </RoundSubtitle>
+          </RoundHeader>
+          <SituationCard>
+            <Situation>상황 설명</Situation>
+            <SituationDetail>{roundData.situation_detail}</SituationDetail>
+          </SituationCard>
+          <FriendMessageBox>
+            <FriendMessage>{roundData.friend_message}</FriendMessage>
+          </FriendMessageBox>
+        </RoundInfo>
+
+        {/* User's message bubble - shown after submission */}
+        {(gameState === "submitted" ||
+          gameState === "analyzing" ||
+          gameState === "showingAnalysis") && (
+          <div style={{ width: "100%" }}>
+            <UserMessageBox>
+              <UserMessage userType={userType}>{userResponse}</UserMessage>
+            </UserMessageBox>
+          </div>
         )}
 
-        {gameState === "submitted" && (
-          <AnalysisContainer>
+        {/* Loading indicator - shown only while analyzing */}
+        {(gameState === "submitted" || gameState === "analyzing") && (
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
             <div
               style={{
                 display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                padding: "40px 0",
                 flexDirection: "column",
+                alignItems: "center",
                 gap: "16px",
               }}
             >
@@ -669,69 +679,64 @@ const Game = () => {
                 위로 메시지를 분석 중이에요...
               </p>
             </div>
-          </AnalysisContainer>
+          </div>
         )}
+
+        {/* Score display - shown inside friend's message after analysis */}
         {gameState === "showingAnalysis" && (
-          <AnalysisContainer>
-            <YourResponse>
-              <ResponseLabel>당신의 응답</ResponseLabel>
-              <ResponseText>{currentResponse}</ResponseText>
-            </YourResponse>
-
-            {gameState === "showingAnalysis" && (
-              <>
-                <AnalysisResult>
-                  <AnalysisLabel>점수</AnalysisLabel>
-                  <AnalysisText>
-                    이번 라운드: {Math.round(scores.score)}점 / 전체:{" "}
-                    {Math.round(scores.totalScore)}점
-                  </AnalysisText>
-                </AnalysisResult>
-              </>
-            )}
-          </AnalysisContainer>
+          <FriendMessageBox>
+            <FriendMessage>
+              <AnalysisLabel>점수</AnalysisLabel>
+              <AnalysisText>
+                이번 라운드: {Math.round(scores.score)}점 / 전체:{" "}
+                {Math.round(scores.totalScore)}점
+              </AnalysisText>
+            </FriendMessage>
+          </FriendMessageBox>
         )}
-
-        <FormContainer onSubmit={handleSubmit}>
-          <InputContainer>
-            <Input
-              value={userResponse}
-              onChange={(e) => setUserResponse(e.target.value)}
-              placeholder="상대방을 위로하는 말을 작성해주세요."
-              disabled={gameState !== "waiting"}
-            />
-            <SubmitButton
-              type="submit"
-              disabled={
-                !userResponse.trim() || isSubmitting || gameState !== "waiting"
-              }
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+        {gameState !== "showingAnalysis" && (
+          <FormContainer onSubmit={handleSubmit}>
+            <InputContainer>
+              <Input
+                value={userResponse}
+                onChange={(e) => setUserResponse(e.target.value)}
+                placeholder="상대방을 위로하는 말을 작성해주세요."
+                disabled={gameState !== "waiting"}
+              />
+              <SubmitButton
+                type="submit"
+                disabled={
+                  !userResponse.trim() ||
+                  isSubmitting ||
+                  gameState !== "waiting"
+                }
               >
-                <path
-                  d="M22 2L11 13"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M22 2L15 22L11 13L2 9L22 2Z"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </SubmitButton>
-          </InputContainer>
-        </FormContainer>
-
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M5 12H19"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M12 5L19 12L12 19"
+                    stroke="white"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </SubmitButton>
+            </InputContainer>
+          </FormContainer>
+        )}
         {gameState === "showingAnalysis" && (
           <NextRoundButton onClick={handleNextRound}>
             {currentRound < 5 ? "다음 라운드" : "결과 보기"}
