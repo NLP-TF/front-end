@@ -538,7 +538,7 @@ const Home = () => {
                 <RuleItem>
                   <RuleNumber>4</RuleNumber>
                   <RuleText>
-                    AI가 반대 유형의 특성을 얼마나 잘 표현했는지 점수로
+                    AI가 해당 유형의 특성을 얼마나 잘 표현했는지 점수로
                     평가해요.
                   </RuleText>
                 </RuleItem>

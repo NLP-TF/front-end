@@ -398,7 +398,7 @@ const Game = () => {
 
   // Set MBTI type from localStorage
   const userType = localStorage.getItem("userType") || "T";
-  const isLearningF = userType === "T"; // T 타입 사용자가 F 배우는 중
+  const isLearningF = userType === "F"; // F 타입을 선택한 경우 F 스타일을 학습
 
   // Theme colors based on MBTI type
   const themeColors = {
