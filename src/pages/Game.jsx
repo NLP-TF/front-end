@@ -709,15 +709,59 @@ const Game = () => {
 
         {/* Score display - shown inside friend's message after analysis */}
         {gameState === "showingAnalysis" && (
-          <FriendMessageBox>
-            <FriendMessage>
-              <AnalysisLabel>점수</AnalysisLabel>
-              <AnalysisText>
-                이번 라운드: {Math.round(scores.score)}점 / 전체:{" "}
-                {Math.round(scores.totalScore)}점
-              </AnalysisText>
-            </FriendMessage>
-          </FriendMessageBox>
+          <AnalysisContainer>
+            <FriendMessageBox>
+              <FriendMessage>
+                <AnalysisLabel>점수 분석</AnalysisLabel>
+                <ChartContainer>
+                  <CircularChart>
+                    <svg width="120" height="120" viewBox="0 0 100 100">
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke="#f3f4f6"
+                        strokeWidth="8"
+                        fill="none"
+                      />
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="40"
+                        stroke={
+                          userType === "F"
+                            ? "var(--Main-F-70, #f59e0c)"
+                            : "var(--Main-T-70, #6c6eed)"
+                        }
+                        strokeWidth="8"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeDasharray={`${
+                          (scores.score / 100) * 251.2
+                        } 251.2`}
+                        transform="rotate(-90 50 50)"
+                        style={{ transition: "stroke-dasharray 1s ease-out" }}
+                      />
+                    </svg>
+                    <ScoreDisplay>
+                      <RoundScore>{Math.round(scores.score)}</RoundScore>
+                      <MaxScore>/ 100점</MaxScore>
+                    </ScoreDisplay>
+                  </CircularChart>
+                  <ScoreDetails>
+                    <ScoreDetailItem>
+                      <ScoreLabel>이번 라운드</ScoreLabel>
+                      <ScoreValue>{Math.round(scores.score)}점</ScoreValue>
+                    </ScoreDetailItem>
+                    <ScoreDetailItem>
+                      <ScoreLabel>전체 점수</ScoreLabel>
+                      <ScoreValue>{Math.round(scores.totalScore)}점</ScoreValue>
+                    </ScoreDetailItem>
+                  </ScoreDetails>
+                </ChartContainer>
+              </FriendMessage>
+            </FriendMessageBox>
+          </AnalysisContainer>
         )}
         {gameState !== "showingAnalysis" && (
           <FormContainer onSubmit={handleSubmit}>
@@ -771,5 +815,66 @@ const Game = () => {
     </Container>
   );
 };
+
+const ChartContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+`;
+
+const CircularChart = styled.div`
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+`;
+
+const ScoreDisplay = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+`;
+
+const RoundScore = styled.div`
+  font-size: 24px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.colors.gray_900};
+  line-height: 1;
+`;
+
+const MaxScore = styled.div`
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.gray_500};
+  margin-top: 2px;
+`;
+
+const ScoreDetails = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+`;
+
+const ScoreDetailItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const ScoreLabel = styled.div`
+  font-size: 12px;
+  color: ${({ theme }) => theme.colors.gray_600};
+  margin-bottom: 4px;
+`;
+
+const ScoreValue = styled.div`
+  font-size: 16px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.gray_900};
+`;
 
 export default Game;

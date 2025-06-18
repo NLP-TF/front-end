@@ -57,15 +57,19 @@ const Result = () => {
     rank: parseInt(player.rank, 10),
   }));
 
-  // 현재 사용자를 포함한 전체 플레이어 목록 생성 및 랭크 순서대로 정렬
-  const allPlayers = [...normalizedTopPlayers, currentUser];
+  // 현재 사용자가 이미 top_players에 있는지 확인하고, 없으면 추가
+  const currentUserInTopPlayers = normalizedTopPlayers.some(
+    (player) => player.nickname === nickname
+  );
 
-  // 상위 5명 + 현재 사용자 (중복 제거)
-  const topPlayers = Array.from(
-    new Map(allPlayers.map((item) => [item.nickname, item])).values()
-  )
-    .sort((a, b) => a.rank - b.rank)
-    .slice(0, 5);
+  // 모든 플레이어 목록 생성 (중복 없이)
+  const allPlayers = [
+    ...normalizedTopPlayers,
+    ...(currentUserInTopPlayers ? [] : [currentUser]),
+  ];
+
+  // 랭크 순서대로 정렬
+  const topPlayers = allPlayers.sort((a, b) => a.rank - b.rank);
 
   // 평균 점수 계산 (500점 만점을 100점 만점으로 변환)
   const avg_score = (total_score / 500) * 100;
@@ -120,52 +124,54 @@ const Result = () => {
 
         <ContentGrid>
           <ScoreSection>
-            <SectionTitle>최종 점수</SectionTitle>
-            <ChartContainer>
-              <CircularChart>
-                <svg width="192" height="192" viewBox="0 0 100 100">
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    stroke="#f3f4f6"
-                    strokeWidth="8"
-                    fill="none"
-                  />
-                  <circle
-                    cx="50"
-                    cy="50"
-                    r="40"
-                    stroke={
-                      user_type === "F"
-                        ? "var(--Main-F-70, #E6B84F)"
-                        : "var(--Main-T-70, #6B6BFF)"
-                    }
-                    strokeWidth="8"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeDasharray={`${(total_score / 500) * 251.2} 251.2`}
-                    transform="rotate(-90 50 50)"
-                    style={{ transition: "stroke-dasharray 1s ease-out" }}
-                  />
-                </svg>
-                <ScoreDisplay>
-                  <MainScore>{Math.round(total_score)}점</MainScore>
-                  <MaxScore>/ 500점</MaxScore>
-                </ScoreDisplay>
-              </CircularChart>
-            </ChartContainer>
-
-            <BadgeContainer>
-              <Badge userType={user_type}>순위 {rank}위</Badge>
-              <Badge userType={user_type}>상위 {Math.round(percentile)}%</Badge>
-            </BadgeContainer>
-
-            <Description>
-              {nickname}님은 상위 {Math.round(percentile)}% 정도의 {user_type}{" "}
-              능력을 가졌어요.{" "}
-            </Description>
-
+            <div>
+              {" "}
+              <SectionTitle>최종 점수</SectionTitle>
+              <ChartContainer>
+                <CircularChart>
+                  <svg width="192" height="192" viewBox="0 0 100 100">
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke="#f3f4f6"
+                      strokeWidth="8"
+                      fill="none"
+                    />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="40"
+                      stroke={
+                        user_type === "F"
+                          ? "var(--Main-F-70, #f59e0c)"
+                          : "var(--Main-T-70, #6c6eed)"
+                      }
+                      strokeWidth="8"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeDasharray={`${(total_score / 500) * 251.2} 251.2`}
+                      transform="rotate(-90 50 50)"
+                      style={{ transition: "stroke-dasharray 1s ease-out" }}
+                    />
+                  </svg>
+                  <ScoreDisplay>
+                    <MainScore>{Math.round(total_score)}점</MainScore>
+                    <MaxScore>/ 500점</MaxScore>
+                  </ScoreDisplay>
+                </CircularChart>
+              </ChartContainer>
+              <BadgeContainer>
+                <Badge userType={user_type}>순위 {rank}위</Badge>
+                <Badge userType={user_type}>
+                  상위 {Math.round(percentile)}%
+                </Badge>
+              </BadgeContainer>
+              <Description>
+                {nickname}님은 상위 {Math.round(percentile)}% 정도의 {user_type}{" "}
+                능력을 가졌어요.{" "}
+              </Description>
+            </div>
             <AnalysisSection>
               <AnalysisTitle>종합 분석</AnalysisTitle>
               <AnalysisText>{feedback}</AnalysisText>
@@ -176,7 +182,7 @@ const Result = () => {
             <SectionTitle>상위 랭킹</SectionTitle>
             <RankingList>
               {topPlayers.map((user, index) => (
-                <RankingItem key={user.nickname}>
+                <RankingItem key={`${user.nickname}-${user.rank}`}>
                   <RankingLeft>
                     <RankBadge
                       rank={parseInt(user.rank, 10)}
@@ -279,17 +285,21 @@ const ContentGrid = styled.div`
 const ScoreSection = styled.div`
   background: white;
   border-radius: 16px;
-  padding: 32px;
+  padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
 `;
 
 const RankingSection = styled.div`
   background: white;
   border-radius: 16px;
-  padding: 32px;
+  padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e5e7eb;
+  max-height: 600px;
+  overflow-y: auto;
 `;
 
 const SectionTitle = styled.h2`
@@ -334,7 +344,7 @@ const BadgeContainer = styled.div`
   display: flex;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 `;
 
 const Badge = styled.div`
@@ -357,11 +367,17 @@ const Badge = styled.div`
 const Description = styled.p`
   text-align: center;
   color: #6b7280;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 `;
 
 const AnalysisSection = styled.div`
   margin-top: 32px;
+  padding: 24px;
+  background-color: #f6f6f7;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 `;
 
 const AnalysisTitle = styled.h3`
